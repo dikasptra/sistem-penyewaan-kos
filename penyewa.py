@@ -1,34 +1,32 @@
 # penyewa.py
+from sewa import Sewa
 
 class Penyewa:
     def __init__(self, id_penyewa, nama, no_telepon):
-        self.id_penyewa = id_penyewa
-        self.nama = nama
-        self.no_telepon = no_telepon
-        self.sewa_aktif = None
+        self.__id_penyewa = id_penyewa
+        self.__nama = nama
+        self.__no_telepon = no_telepon
 
-    def sewa_kamar(self, sewa):
-        """Menghubungkan penyewa dengan transaksi sewa yang aktif."""
-        if self.sewa_aktif is not None:
-            raise ValueError("Penyewa masih memiliki sewa yang aktif!")
+    @property
+    def id_penyewa(self):
+        return self.__id_penyewa
 
-        if sewa.penyewa is not self:
-            raise ValueError("Data penyewa pada transaksi sewa tidak sesuai!")
+    @property
+    def nama(self):
+        return self.__nama
 
-        sewa.proses_sewa()
-        self.sewa_aktif = sewa
-        return sewa
+    @property
+    def no_telepon(self):
+        return self.__no_telepon
 
-    def akhiri_sewa(self):
-        """Mengakhiri sewa aktif milik penyewa."""
-        if self.sewa_aktif is None:
-            raise ValueError("Penyewa tidak memiliki sewa aktif!")
+    def sewa_kamar(self, kamar, tanggal_mulai, durasi_bulan):
+        sewa_baru = Sewa(self, kamar, tanggal_mulai, durasi_bulan)
+        if sewa_baru.proses_sewa():
+            return sewa_baru
+        return None
 
-        self.sewa_aktif.proses_pengakhiran()
-        self.sewa_aktif = None
+    def akhiri_sewa(self, sewa):
+        sewa.proses_pengakhiran()
 
     def info(self):
-        return (
-            f"ID Penyewa: {self.id_penyewa} | Nama: {self.nama} | "
-            f"No. Telepon: {self.no_telepon}"
-        )
+        return f"[{self.__id_penyewa}] {self.__nama} (Telp: {self.__no_telepon})"
